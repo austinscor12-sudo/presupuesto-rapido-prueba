@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Presupuesto Rápido</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#14181f;--mut:#667085;--bd:#e3e6eb;--ac:#0f766e;--act:#fff;--dg:#b42318;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--card:#171b22;--tx:#eef1f5;--mut:#9aa4b2;--bd:#2a313c;--ac:#2dd4bf;--act:#06201d;--dg:#f97066}}
+:root[data-theme="dark"]{--bg:#0e1116;--card:#171b22;--tx:#eef1f5;--mut:#9aa4b2;--bd:#2a313c;--ac:#2dd4bf;--act:#06201d;--dg:#f97066}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:680px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 2px}
+p.s{color:var(--mut);margin:0 0 12px;font-size:14px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font-size:15px;cursor:pointer}
+.tabs button.on{background:var(--ac);color:var(--act);border-color:var(--ac);font-weight:600}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:0 0 8px}
+label{display:block;font-size:13px;color:var(--mut);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:64px;resize:vertical}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.it{display:grid;grid-template-columns:1fr 56px 88px 30px;gap:6px;margin-bottom:6px}
+.it input{padding:8px}
+.x{border:0;background:transparent;color:var(--mut);font-size:20px;cursor:pointer}
+button.b{width:100%;padding:12px;border:0;border-radius:10px;background:var(--ac);color:var(--act);font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
+button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.r{display:flex;justify-content:space-between;padding:3px 0;color:var(--mut)}
+.tot{display:flex;justify-content:space-between;font-size:22px;font-weight:700;margin-top:6px;padding-top:8px;border-top:1px solid var(--bd)}
+.h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.h:last-child{border:0}
+.h small{color:var(--mut)}
+.sm{padding:7px 10px;border-radius:8px;border:1px solid var(--ac);background:transparent;color:var(--ac);cursor:pointer;font-size:14px}
+.sm.d{border-color:var(--dg);color:var(--dg)}
+.lg{display:flex;align-items:center;gap:10px;margin-top:6px}
+.lg img{width:48px;height:48px;object-fit:contain;border:1px solid var(--bd);border-radius:8px}
+.hid{display:none}
+.nm{font-size:13px;color:var(--mut);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Presupuesto Rápido</h1>
+<p class="s">Presupuestos prolijos para cualquier oficio, en 1 minuto.</p>
+<div class="tabs"><button id="t1" class="on">Nuevo</button><button id="t2">Historial</button></div>
+
+<div id="v1">
+<div class="c"><h2>Tus datos</h2>
+<label>Tu nombre o negocio</label><input id="p_b" placeholder="Ej: Juan Pérez – Electricista">
+<div class="g"><div><label>Tu teléfono</label><input id="p_t" placeholder="Ej: 3794 123456"></div>
+<div><label>Moneda</label><select id="p_c"><option value="ARS">$ ARS</option><option value="USD">US$ USD</option><option value="MXN">$ MXN</option><option value="COP">$ COP</option><option value="CLP">$ CLP</option><option value="PEN">S/ PEN</option><option value="UYU">$ UYU</option></select></div></div>
+<label>Logo (opcional, aparece en el PDF)</label>
+<div class="lg"><img id="lgi" class="hid" alt="Logo"><input id="lgf" type="file" accept="image/*"><button class="sm d hid" id="lgx">Quitar</button></div>
+</div>
+
+<div class="c"><h2>Cliente y trabajo</h2>
+<div class="nm" id="nm"></div>
+<label>Nombre del cliente</label><input id="f_cli" list="cl" placeholder="Ej: María González"><datalist id="cl"></datalist>
+<div class="g"><div><label>Teléfono del cliente</label><input id="f_ctel"></div><div><label>Dirección</label><input id="f_cdir"></div></div>
+<label>Descripción del trabajo</label><input id="f_job" placeholder="Ej: Instalación de 5 tomas y llave térmica">
+<label>Fecha</label><input id="f_date" type="date">
+</div>
+
+<div class="c"><h2>Materiales</h2><div id="items"></div><button class="b o" id="add">+ Agregar material</button></div>
+
+<div class="c"><h2>Costos y condiciones</h2>
+<div class="g3"><div><label>Mano de obra</label><input id="f_lab" type="number" inputmode="decimal"></div>
+<div><label>Descuento %</label><input id="f_disc" type="number" inputmode="decimal"></div>
+<div><label>IVA %</label><input id="f_iva" type="number" inputmode="decimal"></div></div>
+<label>Validez (días)</label><input id="f_val" type="number" inputmode="numeric">
+<label>Observaciones</label><textarea id="f_obs" placeholder="Ej: 50% de anticipo, el resto al terminar. Garantía de 3 meses."></textarea>
+<div style="margin-top:12px">
+<div class="r"><span>Materiales</span><span id="s1"></span></div>
+<div class="r"><span>Mano de obra</span><span id="s2"></span></div>
+<div class="r" id="r3"><span>Descuento</span><span id="s3"></span></div>
+<div class="r" id="r4"><span>IVA</span><span id="s4"></span></div>
+<div class="tot"><span>Total</span><span id="tot"></span></div></div>
+</div>
+
+<div class="c">
+<button class="b" id="pdf">Descargar PDF</button>
+<button class="b" id="wa">Enviar por WhatsApp</button>
+<button class="b o" id="sv">Guardar en historial</button>
+<button class="b o" id="cp">Copiar texto</button>
+<button class="b o" id="nw">Presupuesto nuevo (limpiar)</button>
+</div>
+</div>
+
+<div id="v2" class="hid"><div class="c"><h2>Presupuestos guardados</h2><div id="hl"></div></div></div>
+</div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var K="pr2_";
+function ld(k,d){try{var v=localStorage.getItem(K+k);return v?JSON.parse(v):d}catch(e){return d}}
+function st(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var prof=ld("prof",{b:"",t:"",c:"ARS",logo:""}),hist=ld("hist",[]),cnt=ld("cnt",0);
+var FL=["cli","ctel","cdir","job","date","lab","disc","iva","val","obs"];
+function blank(){return{id:0,num:"",date:new Date().toISOString().slice(0,10),cli:"",ctel:"",cdir:"",job:"",items:[{d:"",q:1,p:""}],lab:"",disc:"",iva:"",obs:"",val:7}}
+var q=blank();
+function fmt(n){try{return new Intl.NumberFormat("es-AR",{style:"currency",currency:prof.c,maximumFractionDigits:2}).format(n||0)}catch(e){return String(n)}}
+function dm(d){var p=(d||"").split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:d}
+function calc(){var m=0;q.items.forEach(function(i){m+=(+i.q||0)*(+i.p||0)});var l=+q.lab||0,s=m+l,d=s*(+q.disc||0)/100,b=s-d,v=b*(+q.iva||0)/100;return{m:m,l:l,d:d,v:v,t:b+v}}
+function drawItems(){var h="";q.items.forEach(function(it,i){h+='<div class="it"><input data-i="'+i+'" data-k="d" placeholder="Material" value="'+esc(it.d)+'"><input data-i="'+i+'" data-k="q" type="number" inputmode="decimal" value="'+esc(it.q)+'"><input data-i="'+i+'" data-k="p" type="number" inputmode="decimal" placeholder="Precio" value="'+esc(it.p)+'"><button class="x" data-del="'+i+'">×</button></div>'});$("items").innerHTML=h}
+function upd(){var c=calc();$("s1").textContent=fmt(c.m);$("s2").textContent=fmt(c.l);$("s3").textContent="- "+fmt(c.d);$("s4").textContent=fmt(c.v);$("r3").classList.toggle("hid",!c.d);$("r4").classList.toggle("hid",!c.v);$("tot").textContent=fmt(c.t);$("nm").textContent=q.num?"Presupuesto "+q.num:"Se numera automáticamente al guardar"}
+function fill(){FL.forEach(function(k){$("f_"+k).value=q[k]});drawItems();upd()}
+function clients(){var s={};hist.forEach(function(h){if(h.cli)s[h.cli]=1});$("cl").innerHTML=Object.keys(s).map(function(n){return'<option value="'+esc(n)+'">'}).join("")}
+function save(){if(!q.id){cnt++;st("cnt",cnt);q.id=Date.now();q.num="P-"+("0000"+cnt).slice(-4)}var c=calc(),o=JSON.parse(JSON.stringify(q));o.total=c.t;o.cur=prof.c;var f=false;for(var i=0;i<hist.length;i++)if(hist[i].id==o.id){hist[i]=o;f=true}if(!f)hist.unshift(o);st("hist",hist);clients();upd();drawHist()}
+function drawHist(){var h="";if(!hist.length)h='<p class="s">Todavía no guardaste ninguno.</p>';hist.forEach(function(x,i){var f;try{f=new Intl.NumberFormat("es-AR",{style:"currency",currency:x.cur||"ARS"}).format(x.total)}catch(e){f=x.total}h+='<div class="h"><div><b>'+esc(x.num)+'</b> · '+esc(x.cli||"Sin cliente")+'<br><small>'+dm(x.date)+' · '+f+'</small></div><div><button class="sm" data-o="'+i+'">Abrir</button> <button class="sm d" data-x="'+i+'">Borrar</button></div></div>'});$("hl").innerHTML=h;$("t2").textContent="Historial ("+hist.length+")"}
+function txt(){var c=calc(),L=["*PRESUPUESTO "+q.num+"*"];if(prof.b)L.push(prof.b);if(prof.t)L.push("Tel: "+prof.t);L.push("Fecha: "+dm(q.date),"");if(q.cli)L.push("Cliente: "+q.cli);if(q.cdir)L.push("Dirección: "+q.cdir);if(q.job)L.push("Trabajo: "+q.job);var a=q.items.filter(function(i){return i.d});if(a.length){L.push("","Materiales:");a.forEach(function(i){L.push("• "+i.d+" x"+i.q+" – "+fmt((+i.q||0)*(+i.p||0)))})}if(c.l)L.push("","Mano de obra: "+fmt(c.l));if(c.d)L.push("Descuento: -"+fmt(c.d));if(c.v)L.push("IVA ("+q.iva+"%): "+fmt(c.v));L.push("","*TOTAL: "+fmt(c.t)+"*");if(+q.val)L.push("Validez: "+q.val+" días");if(q.obs)L.push("","Obs: "+q.obs);return L.join("\n")}
+function pdf(){save();if(!window.jspdf){alert("No se pudo cargar el generador de PDF. Revisá tu conexión.");return}
+var D=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),c=calc(),y;
+function F(n){return fmt(n).replace(/\u00a0/g," ")}
+function T(s,x,y,o){D.text(String(s),x,y,o)}
+if(prof.logo){try{D.addImage(prof.logo,"PNG",15,12,24,24)}catch(e){}}
+var x0=prof.logo?44:15;
+D.setFont("helvetica","bold");D.setFontSize(15);T(prof.b||"Presupuesto",x0,20);
+D.setFont("helvetica","normal");D.setFontSize(10);if(prof.t)T("Tel: "+prof.t,x0,26);
+D.setFont("helvetica","bold");D.setFontSize(13);T("PRESUPUESTO "+q.num,195,20,{align:"right"});
+D.setFont("helvetica","normal");D.setFontSize(10);T("Fecha: "+dm(q.date),195,26,{align:"right"});
+D.setDrawColor(190);D.line(15,40,195,40);y=48;
+[["Cliente",q.cli],["Teléfono",q.ctel],["Dirección",q.cdir],["Trabajo",q.job]].forEach(function(r){if(r[1]){D.setFont("helvetica","bold");T(r[0]+":",15,y);D.setFont("helvetica","normal");var ls=D.splitTextToSize(String(r[1]),150);T(ls,40,y);y+=5.5*ls.length}});
+y+=4;D.setFont("helvetica","bold");T("Descripción",15,y);T("Cant.",125,y,{align:"right"});T("Precio",158,y,{align:"right"});T("Subtotal",195,y,{align:"right"});D.line(15,y+2,195,y+2);y+=8;D.setFont("helvetica","normal");
+q.items.filter(function(i){return i.d}).forEach(function(i){var ls=D.splitTextToSize(i.d,95);if(y>270){D.addPage();y=20}T(ls,15,y);T(i.q,125,y,{align:"right"});T(F(+i.p||0),158,y,{align:"right"});T(F((+i.q||0)*(+i.p||0)),195,y,{align:"right"});y+=5.5*ls.length+1});
+D.line(15,y,195,y);y+=7;if(y>240){D.addPage();y=20}
+function R(a,b,bold){D.setFont("helvetica",bold?"bold":"normal");D.setFontSize(bold?12:10);T(a,150,y,{align:"right"});T(b,195,y,{align:"right"});y+=6.5}
+R("Materiales:",F(c.m));if(c.l)R("Mano de obra:",F(c.l));if(c.d)R("Descuento:","-"+F(c.d));if(c.v)R("IVA "+q.iva+"%:",F(c.v));R("TOTAL:",F(c.t),true);
+D.setFontSize(10);D.setFont("helvetica","normal");y+=4;
+if(+q.val){T("Validez del presupuesto: "+q.val+" días",15,y);y+=6}
+if(q.obs){D.setFont("helvetica","bold");T("Observaciones:",15,y);y+=5.5;D.setFont("helvetica","normal");var ol=D.splitTextToSize(q.obs,180);T(ol,15,y)}
+try{D.save("Presupuesto-"+q.num+".pdf")}catch(e){try{window.open(D.output("bloburl"),"_blank")}catch(e2){}}}
+// eventos
+$("t1").onclick=function(){$("v1").classList.remove("hid");$("v2").classList.add("hid");$("t1").classList.add("on");$("t2").classList.remove("on")};
+$("t2").onclick=function(){$("v2").classList.remove("hid");$("v1").classList.add("hid");$("t2").classList.add("on");$("t1").classList.remove("on");drawHist()};
+["b","t","c"].forEach(function(k){$("p_"+k).addEventListener("input",function(e){prof[k]=e.target.value;st("prof",prof);upd()})});
+FL.forEach(function(k){$("f_"+k).addEventListener("input",function(e){q[k]=e.target.value;if(k=="cli"){var m=hist.filter(function(h){return h.cli==q.cli})[0];if(m){if(!q.ctel){q.ctel=m.ctel;$("f_ctel").value=m.ctel||""}if(!q.cdir){q.cdir=m.cdir;$("f_cdir").value=m.cdir||""}}}upd()})});
+$("items").addEventListener("input",function(e){var i=e.target.dataset.i,k=e.target.dataset.k;if(i!=null){q.items[i][k]=e.target.value;upd()}});
+$("items").addEventListener("click",function(e){var d=e.target.dataset.del;if(d!=null){q.items.splice(d,1);if(!q.items.length)q.items.push({d:"",q:1,p:""});drawItems();upd()}});
+$("add").onclick=function(){q.items.push({d:"",q:1,p:""});drawItems()};
+$("sv").onclick=function(){save();var b=$("sv");b.textContent="¡Guardado!";setTimeout(function(){b.textContent="Guardar en historial"},1800)};
+$("pdf").onclick=pdf;
+$("wa").onclick=function(){save();window.open("https://wa.me/?text="+encodeURIComponent(txt()),"_blank")};
+$("cp").onclick=function(){save();var b=$("cp");try{navigator.clipboard.writeText(txt()).then(function(){b.textContent="¡Copiado!"})}catch(e){b.textContent="No se pudo copiar"}setTimeout(function(){b.textContent="Copiar texto"},1800)};
+$("nw").onclick=function(){q=blank();fill()};
+$("hl").addEventListener("click",function(e){var o=e.target.dataset.o,x=e.target.dataset.x;if(o!=null){q=JSON.parse(JSON.stringify(hist[o]));fill();$("t1").click()}if(x!=null&&confirm("¿Borrar este presupuesto?")){hist.splice(x,1);st("hist",hist);clients();drawHist()}});
+function logo(){$("lgi").classList.toggle("hid",!prof.logo);$("lgx").classList.toggle("hid",!prof.logo);if(prof.logo)$("lgi").src=prof.logo}
+$("lgf").addEventListener("change",function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement("canvas");c.width=c.height=200;var x=c.getContext("2d"),s=Math.min(200/im.width,200/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,(200-w)/2,(200-h)/2,w,h);prof.logo=c.toDataURL("image/png");st("prof",prof);logo()};im.src=r.result};r.readAsDataURL(f)});
+$("lgx").onclick=function(){prof.logo="";st("prof",prof);$("lgf").value="";logo()};
+$("p_b").value=prof.b;$("p_t").value=prof.t;$("p_c").value=prof.c;logo();clients();fill();drawHist();
+</script>
+</body>
+</html>
