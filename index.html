@@ -57,7 +57,10 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 </div></div>
 <div id="lk" class="au hid">
 <h1>Tu cuenta no tiene suscripción activa</h1><p class="s" id="lk_m"></p>
-<div class="c"><p>Para activar tu acceso escribinos y te habilitamos enseguida.</p>
+<div class="c"><p>Elegí cómo pagar. Importante: <b>usá el mismo email con el que te registraste</b>. Después de pagar, tu acceso se activa en un rato.</p>
+<a href="https://mpago.la/2GQxnnN" target="_blank" rel="noopener"><button class="b">Pagar en pesos (Mercado Pago)</button></a>
+<a href="https://pay.hotmart.com/H108180436C?off=knbe0gba" target="_blank" rel="noopener"><button class="b">Pagar en dólares (Hotmart)</button></a>
+<p class="s" style="margin-top:14px">¿Dudas o ya pagaste? Escribinos:</p>
 <a id="lk_w" target="_blank" rel="noopener"><button class="b">Escribir por WhatsApp</button></a>
 <button class="b o" id="lk_r">Ya pagué, revisar de nuevo</button>
 <button class="b o" id="lk_o">Salir</button></div></div>
@@ -185,11 +188,11 @@ const app=initializeApp({
  appId:"1:917898843489:web:f18d3ad9f1feae0aa02120"});
 const auth=getAuth(app),db=getFirestore(app);
 const $=i=>document.getElementById(i);
-const CONTACTO="https://wa.me/5493794860604"; // CAMBIAR por tu número de WhatsApp
+const CONTACTO="https://wa.me/549XXXXXXXXXX"; // CAMBIAR por tu número de WhatsApp
 let started=false,uid=null,tm={};
 const show=id=>["au","lk","app"].forEach(x=>$(x).classList.toggle("hid",x!==id));
 const ERR={"auth/invalid-credential":"Email o contraseña incorrectos.","auth/invalid-email":"El email no es válido.","auth/email-already-in-use":"Ese email ya tiene cuenta. Tocá Ingresar.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/missing-password":"Escribí tu contraseña.","auth/popup-closed-by-user":"Cerraste la ventana de Google."};
-const msg=e=>ERR[e.code]||("Error: "+(e.code||e.message));
+const msg=e=>ERR[e.code]||"Ocurrió un error. Intentá de nuevo.";
 window.cloudSave=(k,v)=>{clearTimeout(tm[k]);tm[k]=setTimeout(()=>setDoc(doc(db,"users",uid,"store",k),{v:JSON.stringify(v)}).catch(e=>console.error(e)),700)};
 async function enter(u){
  uid=u.uid;
