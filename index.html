@@ -56,7 +56,7 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 <button class="sm" id="a_r" style="margin-top:10px;border:0">Olvidé mi contraseña</button>
 </div></div>
 <div id="lk" class="au hid">
-<h1>Tu cuenta no tiene suscripción activa</h1><p class="s" id="lk_m"></p>
+<h1>Tu período de acceso terminó</h1><p class="s" id="lk_m"></p>
 <div class="c"><p>Elegí cómo pagar. Importante: <b>usá el mismo email con el que te registraste</b>. Después de pagar, tu acceso se activa en un rato.</p>
 <a href="https://mpago.la/2GQxnnN" target="_blank" rel="noopener"><button class="b">Pagar en pesos (Mercado Pago)</button></a>
 <a href="https://pay.hotmart.com/H108180436C?off=knbe0gba" target="_blank" rel="noopener"><button class="b">Pagar en dólares (Hotmart)</button></a>
@@ -65,6 +65,9 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 <button class="b o" id="lk_r">Ya pagué, revisar de nuevo</button>
 <button class="b o" id="lk_o">Salir</button></div></div>
 <div class="w hid" id="app">
+<div class="c hid" id="tb"><span id="tbm"></span>
+<a href="https://mpago.la/2GQxnnN" target="_blank" rel="noopener"><button class="sm">Pagar en pesos</button></a>
+<a href="https://pay.hotmart.com/H108180436C?off=knbe0gba" target="_blank" rel="noopener"><button class="sm">Pagar en dólares</button></a></div>
 <h1>Presupuesto Rápido</h1>
 <p class="s">Presupuestos prolijos para cualquier oficio, en 1 minuto.</p>
 <div class="tabs"><button id="t1" class="on">Nuevo</button><button id="t2">Historial</button><button id="t3">Salir</button></div>
@@ -178,7 +181,7 @@ function init(){prof=ld("prof",{b:"",t:"",c:"ARS",logo:""});hist=ld("hist",[]);c
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,sendPasswordResetEmail,signOut} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import {getFirestore,doc,getDoc,setDoc,getDocs,collection,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,getDocs,collection,serverTimestamp,Timestamp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 const app=initializeApp({
  apiKey:"AIzaSyApXClN-3-zlUSjGDrEP6ONZxF-lPdjF_Q",
  authDomain:"presupuesto-rapido-prueba.firebaseapp.com",
@@ -198,12 +201,14 @@ async function enter(u){
  uid=u.uid;
  const ref=doc(db,"users",uid);
  let s=await getDoc(ref);
- if(!s.exists()){await setDoc(ref,{email:u.email||"",active:false,createdAt:serverTimestamp()});s=await getDoc(ref)}
+ if(!s.exists()){await setDoc(ref,{email:u.email||"",active:true,until:Timestamp.fromMillis(Date.now()+3*864e5),createdAt:serverTimestamp()});s=await getDoc(ref)}
  const d=s.data(),ok=d.active===true&&d.until&&d.until.toDate()>new Date();
  if(!ok){$("lk_m").textContent=u.email||"";show("lk");return}
  const snap=await getDocs(collection(db,"users",uid,"store")),data={};
  snap.forEach(x=>{try{data[x.id]=JSON.parse(x.data().v)}catch(e){}});
  if(!started){started=true;window.startApp(data)}
+ const dl=Math.ceil((d.until.toDate()-new Date())/864e5);
+ $("tb").classList.toggle("hid",dl>3);$("tbm").textContent="Te quedan "+dl+(dl==1?" día":" días")+" de acceso. ";
  show("app")}
 onAuthStateChanged(auth,u=>{if(!u){show("au");return}enter(u).catch(e=>{console.error(e);$("a_m").textContent=msg(e);show("au")})});
 const em=()=>$("a_e").value.trim(),pw=()=>$("a_p").value;
