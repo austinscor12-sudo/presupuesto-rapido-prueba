@@ -40,13 +40,31 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 .lg img{width:48px;height:48px;object-fit:contain;border:1px solid var(--bd);border-radius:8px}
 .hid{display:none}
 .nm{font-size:13px;color:var(--mut);margin-bottom:6px}
+.au{max-width:380px;margin:0 auto;padding:24px 16px}
 </style>
 </head>
 <body>
-<div class="w">
+<div id="au" class="au">
+<h1>Presupuesto Rápido</h1><p class="s">Ingresá o creá tu cuenta.</p>
+<div class="c">
+<label>Email</label><input id="a_e" type="email" autocomplete="email">
+<label>Contraseña</label><input id="a_p" type="password" autocomplete="current-password">
+<div id="a_m" class="nm" style="color:var(--dg);margin-top:8px"></div>
+<button class="b" id="a_in">Ingresar</button>
+<button class="b o" id="a_up">Crear cuenta</button>
+<button class="b o" id="a_g">Continuar con Google</button>
+<button class="sm" id="a_r" style="margin-top:10px;border:0">Olvidé mi contraseña</button>
+</div></div>
+<div id="lk" class="au hid">
+<h1>Tu cuenta no tiene suscripción activa</h1><p class="s" id="lk_m"></p>
+<div class="c"><p>Para activar tu acceso escribinos y te habilitamos enseguida.</p>
+<a id="lk_w" target="_blank" rel="noopener"><button class="b">Escribir por WhatsApp</button></a>
+<button class="b o" id="lk_r">Ya pagué, revisar de nuevo</button>
+<button class="b o" id="lk_o">Salir</button></div></div>
+<div class="w hid" id="app">
 <h1>Presupuesto Rápido</h1>
 <p class="s">Presupuestos prolijos para cualquier oficio, en 1 minuto.</p>
-<div class="tabs"><button id="t1" class="on">Nuevo</button><button id="t2">Historial</button></div>
+<div class="tabs"><button id="t1" class="on">Nuevo</button><button id="t2">Historial</button><button id="t3">Salir</button></div>
 
 <div id="v1">
 <div class="c"><h2>Tus datos</h2>
@@ -95,11 +113,12 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 
 <script>
 var $=function(i){return document.getElementById(i)};
-var K="pr2_";
-function ld(k,d){try{var v=localStorage.getItem(K+k);return v?JSON.parse(v):d}catch(e){return d}}
-function st(k,v){try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}}
+var C={};
+function ld(k,d){return C[k]!==undefined?C[k]:d}
+function st(k,v){C[k]=v;if(window.cloudSave)window.cloudSave(k,v)}
+function startApp(data){C=data||{};init()}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-var prof=ld("prof",{b:"",t:"",c:"ARS",logo:""}),hist=ld("hist",[]),cnt=ld("cnt",0);
+var prof,hist,cnt;
 var FL=["cli","ctel","cdir","job","date","lab","disc","iva","val","obs"];
 function blank(){return{id:0,num:"",date:new Date().toISOString().slice(0,10),cli:"",ctel:"",cdir:"",job:"",items:[{d:"",q:1,p:""}],lab:"",disc:"",iva:"",obs:"",val:7}}
 var q=blank();
@@ -151,7 +170,48 @@ $("hl").addEventListener("click",function(e){var o=e.target.dataset.o,x=e.target
 function logo(){$("lgi").classList.toggle("hid",!prof.logo);$("lgx").classList.toggle("hid",!prof.logo);if(prof.logo)$("lgi").src=prof.logo}
 $("lgf").addEventListener("change",function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement("canvas");c.width=c.height=200;var x=c.getContext("2d"),s=Math.min(200/im.width,200/im.height),w=im.width*s,h=im.height*s;x.drawImage(im,(200-w)/2,(200-h)/2,w,h);prof.logo=c.toDataURL("image/png");st("prof",prof);logo()};im.src=r.result};r.readAsDataURL(f)});
 $("lgx").onclick=function(){prof.logo="";st("prof",prof);$("lgf").value="";logo()};
-$("p_b").value=prof.b;$("p_t").value=prof.t;$("p_c").value=prof.c;logo();clients();fill();drawHist();
+function init(){prof=ld("prof",{b:"",t:"",c:"ARS",logo:""});hist=ld("hist",[]);cnt=ld("cnt",0);q=blank();$("p_b").value=prof.b;$("p_t").value=prof.t;$("p_c").value=prof.c;logo();clients();fill();drawHist()}
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,sendPasswordResetEmail,signOut} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,getDocs,collection,serverTimestamp} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+const app=initializeApp({
+ apiKey:"AIzaSyApXClN-3-zlUSjGDrEP6ONZxF-lPdjF_Q",
+ authDomain:"presupuesto-rapido-prueba.firebaseapp.com",
+ projectId:"presupuesto-rapido-prueba",
+ storageBucket:"presupuesto-rapido-prueba.firebasestorage.app",
+ messagingSenderId:"917898843489",
+ appId:"1:917898843489:web:f18d3ad9f1feae0aa02120"});
+const auth=getAuth(app),db=getFirestore(app);
+const $=i=>document.getElementById(i);
+const CONTACTO="https://wa.me/549XXXXXXXXXX"; // CAMBIAR por tu número de WhatsApp
+let started=false,uid=null,tm={};
+const show=id=>["au","lk","app"].forEach(x=>$(x).classList.toggle("hid",x!==id));
+const ERR={"auth/invalid-credential":"Email o contraseña incorrectos.","auth/invalid-email":"El email no es válido.","auth/email-already-in-use":"Ese email ya tiene cuenta. Tocá Ingresar.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/missing-password":"Escribí tu contraseña.","auth/popup-closed-by-user":"Cerraste la ventana de Google."};
+const msg=e=>ERR[e.code]||"Ocurrió un error. Intentá de nuevo.";
+window.cloudSave=(k,v)=>{clearTimeout(tm[k]);tm[k]=setTimeout(()=>setDoc(doc(db,"users",uid,"store",k),{v:JSON.stringify(v)}).catch(e=>console.error(e)),700)};
+async function enter(u){
+ uid=u.uid;
+ const ref=doc(db,"users",uid);
+ let s=await getDoc(ref);
+ if(!s.exists()){await setDoc(ref,{email:u.email||"",active:false,createdAt:serverTimestamp()});s=await getDoc(ref)}
+ const d=s.data(),ok=d.active===true&&d.until&&d.until.toDate()>new Date();
+ if(!ok){$("lk_m").textContent=u.email||"";show("lk");return}
+ const snap=await getDocs(collection(db,"users",uid,"store")),data={};
+ snap.forEach(x=>{try{data[x.id]=JSON.parse(x.data().v)}catch(e){}});
+ if(!started){started=true;window.startApp(data)}
+ show("app")}
+onAuthStateChanged(auth,u=>{if(!u){show("au");return}enter(u).catch(e=>{console.error(e);$("a_m").textContent=msg(e);show("au")})});
+const em=()=>$("a_e").value.trim(),pw=()=>$("a_p").value;
+const go=f=>async()=>{$("a_m").textContent="";try{await f()}catch(e){$("a_m").textContent=msg(e)}};
+$("a_in").onclick=go(()=>signInWithEmailAndPassword(auth,em(),pw()));
+$("a_up").onclick=go(()=>createUserWithEmailAndPassword(auth,em(),pw()));
+$("a_g").onclick=go(()=>signInWithPopup(auth,new GoogleAuthProvider()));
+$("a_r").onclick=go(async()=>{if(!em()){$("a_m").textContent="Escribí tu email arriba.";return}await sendPasswordResetEmail(auth,em());$("a_m").textContent="Te enviamos un mail para cambiar la contraseña."});
+$("lk_o").onclick=$("t3").onclick=async()=>{await signOut(auth);location.reload()};
+$("lk_r").onclick=()=>enter(auth.currentUser).catch(e=>console.error(e));
+$("lk_w").href=CONTACTO;
 </script>
 </body>
 </html>
