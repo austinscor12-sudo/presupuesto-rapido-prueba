@@ -41,9 +41,38 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 .hid{display:none}
 .nm{font-size:13px;color:var(--mut);margin-bottom:6px}
 .au{max-width:380px;margin:0 auto;padding:24px 16px}
+.ft{text-align:center;font-size:13px;color:var(--mut);margin:14px 0}
+.ft a,.ln{color:var(--ac);cursor:pointer;text-decoration:underline}
+.lgc p,.lgc li{font-size:14px;margin:6px 0}.lgc ul{padding-left:20px;margin:6px 0}
 </style>
 </head>
 <body>
+<div id="lg" class="au hid" style="max-width:640px">
+<button class="sm" id="lg_b">← Volver</button>
+<h1 style="margin-top:12px">Términos, privacidad y soporte</h1><p class="s">Última actualización: 24/10/2026</p>
+<div class="c lgc" id="lg_t"><h2>Términos de uso</h2>
+<p><b>Qué es.</b> Presupuesto Rápido es una app web para crear presupuestos en PDF y guardarlos. Es ofrecida por <span class="cn"></span>.</p>
+<p><b>Tu cuenta.</b> Sos responsable de tu email y tu contraseña. La cuenta es personal o de un solo negocio: no se puede compartir con terceros ni revender el acceso.</p>
+<p><b>Prueba gratis y planes.</b> Al crear tu cuenta tenés 3 días de prueba gratis. Después, el acceso es pago:</p>
+<ul><li>En dólares (Hotmart): suscripción mensual que se renueva sola hasta que la canceles desde Hotmart.</li><li>En pesos (Mercado Pago): pago único por 30 días de acceso. No se renueva solo.</li></ul>
+<p>Para activar tu acceso tenés que registrarte con el mismo email con el que pagaste. La activación puede demorar un rato desde que el pago se acredita.</p>
+<p><b>Cancelación y reembolsos.</b> Podés cancelar cuando quieras. Los reembolsos dependen de las condiciones de la plataforma de pago que uses; si tenés un problema, escribinos y lo revisamos.</p>
+<p><b>Tu contenido y tu responsabilidad.</b> Los precios, impuestos, descuentos y datos de cada presupuesto los cargás vos. La app hace las cuentas con lo que ingresás y no reemplaza el asesoramiento contable, impositivo o legal. Revisá siempre el presupuesto antes de enviarlo.</p>
+<p><b>Disponibilidad.</b> La app se ofrece tal como está. Puede haber interrupciones o cambios. Hacemos lo razonable para mantenerla funcionando y cuidar tus datos, pero te recomendamos descargar los PDF importantes. En la medida que la ley lo permita, no respondemos por pérdidas indirectas derivadas del uso de la app.</p>
+<p><b>Cambios.</b> Podemos actualizar estos términos. Si seguís usando la app después de un cambio, se entiende que lo aceptás.</p></div>
+<div class="c lgc" id="lg_p"><h2>Política de privacidad</h2>
+<p><b>Qué datos guardamos.</b> Tu email (o tu cuenta de Google), los datos que cargás en la app (nombre del negocio, teléfono, logo), los clientes (nombre, teléfono, dirección) y tus presupuestos.</p>
+<p><b>Para qué los usamos.</b> Solo para que la app funcione y para activar tu acceso. No vendemos tus datos ni los usamos para publicidad.</p>
+<p><b>Dónde se guardan.</b> En Firebase (Google), con reglas que permiten que solo vos accedas a tus datos. La app se aloja en Cloudflare. Los pagos los procesan Mercado Pago y Hotmart: nosotros no vemos ni guardamos datos de tu tarjeta, solo recibimos el aviso del pago con tu email.</p>
+<p><b>Datos de tus clientes.</b> Los cargás vos, y sos responsable de tener derecho a usarlos para tus presupuestos.</p>
+<p><b>Tus derechos.</b> Podés pedirnos acceder a tus datos, corregirlos o que borremos tu cuenta y todo lo guardado. Escribinos y lo hacemos. En Argentina, la Agencia de Acceso a la Información Pública es el órgano de control de la Ley 25.326 y atiende denuncias y reclamos sobre datos personales.</p>
+<p><b>Almacenamiento en tu navegador.</b> Usamos el almacenamiento del navegador solo para mantener tu sesión iniciada. No usamos cookies de seguimiento.</p></div>
+<div class="c lgc" id="lg_s"><h2>Soporte</h2>
+<p>¿Dudas, problemas para entrar o ya pagaste y no se activó tu acceso? Escribinos y te respondemos lo antes posible.</p>
+<p>Email: <a class="ce ln"></a></p>
+<p>WhatsApp: <a class="cw ln" target="_blank" rel="noopener">escribinos por WhatsApp</a></p>
+<p>Si ya pagaste, mandanos el email con el que te registraste y el comprobante.</p></div>
+</div>
 <div id="au" class="au">
 <h1>Presupuesto Rápido</h1><p class="s">Ingresá o creá tu cuenta.</p>
 <div class="c">
@@ -54,7 +83,9 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 <button class="b o" id="a_up">Crear cuenta</button>
 <button class="b o" id="a_g">Continuar con Google</button>
 <button class="sm" id="a_r" style="margin-top:10px;border:0">Olvidé mi contraseña</button>
-</div></div>
+</div>
+<p class="s" style="text-align:center">Al crear tu cuenta aceptás los <a data-lg="lg_t" class="ln">Términos</a> y la <a data-lg="lg_p" class="ln">Política de privacidad</a>.</p>
+<div class="ft"><a data-lg="lg_t">Términos</a> · <a data-lg="lg_p">Privacidad</a> · <a data-lg="lg_s">Soporte</a></div></div>
 <div id="lk" class="au hid">
 <h1>Tu período de acceso terminó</h1><p class="s" id="lk_m"></p>
 <div class="c"><p>Elegí cómo pagar. Importante: <b>usá el mismo email con el que te registraste</b>. Después de pagar, tu acceso se activa en un rato.</p>
@@ -63,7 +94,8 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 <p class="s" style="margin-top:14px">¿Dudas o ya pagaste? Escribinos:</p>
 <a id="lk_w" target="_blank" rel="noopener"><button class="b">Escribir por WhatsApp</button></a>
 <button class="b o" id="lk_r">Ya pagué, revisar de nuevo</button>
-<button class="b o" id="lk_o">Salir</button></div></div>
+<button class="b o" id="lk_o">Salir</button></div>
+<div class="ft"><a data-lg="lg_t">Términos</a> · <a data-lg="lg_p">Privacidad</a> · <a data-lg="lg_s">Soporte</a></div></div>
 <div class="w hid" id="app">
 <div class="c hid" id="tb"><span id="tbm"></span>
 <a href="https://mpago.la/2GQxnnN" target="_blank" rel="noopener"><button class="sm">Pagar en pesos</button></a>
@@ -115,7 +147,7 @@ button.o{background:transparent;color:var(--ac);border:1px solid var(--ac)}
 </div>
 
 <div id="v2" class="hid"><div class="c"><h2>Presupuestos guardados</h2><div id="hl"></div></div></div>
-</div>
+<div class="ft"><a data-lg="lg_t">Términos</a> · <a data-lg="lg_p">Privacidad</a> · <a data-lg="lg_s">Soporte</a></div></div>
 
 <script>
 var $=function(i){return document.getElementById(i)};
@@ -191,9 +223,19 @@ const app=initializeApp({
  appId:"1:917898843489:web:f18d3ad9f1feae0aa02120"});
 const auth=getAuth(app),db=getFirestore(app);
 const $=i=>document.getElementById(i);
-const CONTACTO="https://wa.me/5493794860604"; // CAMBIAR por tu número de WhatsApp
+// ===== CONFIGURACIÓN: completá estos 3 datos =====
+const CONTACTO="https://wa.me/5493794860604"; // tu WhatsApp con código de país, sin + ni espacios
+const SOPORTE_EMAIL="austinscor12@gmail.com"; // tu email de soporte
+const NOMBRE="Ezequiel"; // tu nombre o el de tu emprendimiento
+// ================================================
 let started=false,uid=null,tm={};
-const show=id=>["au","lk","app"].forEach(x=>$(x).classList.toggle("hid",x!==id));
+let cur="au";
+const show=id=>{if(id!=="lg")cur=id;["au","lk","app","lg"].forEach(x=>$(x).classList.toggle("hid",x!==id))};
+document.querySelectorAll(".cn").forEach(e=>e.textContent=NOMBRE);
+document.querySelectorAll(".ce").forEach(e=>{e.textContent=SOPORTE_EMAIL;e.href="mailto:"+SOPORTE_EMAIL});
+document.querySelectorAll(".cw").forEach(e=>e.href=CONTACTO);
+document.querySelectorAll("[data-lg]").forEach(a=>a.onclick=()=>{show("lg");$(a.dataset.lg).scrollIntoView()});
+$("lg_b").onclick=()=>show(cur);
 const ERR={"auth/invalid-credential":"Email o contraseña incorrectos.","auth/invalid-email":"El email no es válido.","auth/email-already-in-use":"Ese email ya tiene cuenta. Tocá Ingresar.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/missing-password":"Escribí tu contraseña.","auth/popup-closed-by-user":"Cerraste la ventana de Google."};
 const msg=e=>ERR[e.code]||"Ocurrió un error. Intentá de nuevo.";
 window.cloudSave=(k,v)=>{clearTimeout(tm[k]);tm[k]=setTimeout(()=>setDoc(doc(db,"users",uid,"store",k),{v:JSON.stringify(v)}).catch(e=>console.error(e)),700)};
